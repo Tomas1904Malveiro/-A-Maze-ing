@@ -69,9 +69,10 @@ class MazeGenerator:
 
 
 def main() -> None:
-    maze = MazeGenerator(3, 2, (0, 0), (2, 1))
-    maze.open_wall(0, 0, E)
-    print(maze.grid)
+    maze = MazeGenerator(5, 5, (0, 0), (4, 4), seed=42)
+    maze.generate()
+    for row in maze.grid:
+        print(row)
 
 
 if __name__ == "__main__":
