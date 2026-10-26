@@ -68,6 +68,47 @@ class MazeGenerator:
                 stack.pop()
 
 
+    def display(self) -> None:
+        for y in range(self.height):
+            line = ""
+
+            for x in range(self.width):
+                line += "+"
+
+                if self.grid[y][x] & (1 << N):
+                    line += "---"
+
+                else:
+                    line += "   "
+
+            line += "+"
+            print(line)
+
+
+            line = ""
+            for x in range(self.width):
+                if self.grid[y][x] & (1 << W):
+                    line += "|"
+                else:
+                    line += " "
+                line += "   "
+            if self.grid[y][self.width - 1] & (1 << E):
+                line += "|"
+            else:
+                line += " "
+            print(line)
+
+        line = ""
+        for x in range(self.width):
+            line += "+"
+            if self.grid[self.height - 1][x] & (1 << S):
+                line += "---"
+            else:
+                line += "   "
+        line += "+"
+        print(line)
+
+
 def main() -> None:
     maze = MazeGenerator(5, 5, (0, 0), (4, 4), seed=42)
     maze.generate()
