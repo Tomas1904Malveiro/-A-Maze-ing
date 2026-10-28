@@ -15,6 +15,7 @@ CELLS_42 = [
     (5, 5), (6, 5), (7, 5),
 ]
 
+
 class MazeGenerator:
     def __init__(self, width: int, height: int,
                 entry: tuple[int, int], exit_: tuple[int, int],
@@ -28,7 +29,6 @@ class MazeGenerator:
         self.rng = random.Random(seed)
         self.cells_42: list[tuple[int, int]] = []
 
-
     def open_wall(self, x: int, y: int, direction: int) -> None:
         dx = [0, 1, 0, -1]
         dy = [-1, 0, 1, 0]
@@ -39,7 +39,6 @@ class MazeGenerator:
 
         self.grid[y][x] &= ~(1 << direction)
         self.grid[ny][nx] &= ~(1 << opposite[direction])
-
 
     def get_cells_42(self) -> list[tuple[int, int]]:
         if self.height < 7 or self.width < 10:
@@ -54,7 +53,6 @@ class MazeGenerator:
             cells.append((start_x + cell[0], start_y + cell[1]))
         return cells
 
-    
     def generate(self) -> None:
         visited = [[False] * self.width for _ in range(self.height)]
 
@@ -76,7 +74,7 @@ class MazeGenerator:
             current = stack[-1]
             x = current[0]
             y = current[1]
-        
+
             options = []
             if y > 0 and not visited[y - 1][x]:
                 options.append(N)
@@ -86,7 +84,7 @@ class MazeGenerator:
                 options.append(S)
             if x > 0 and not visited[y][x - 1]:
                 options.append(W)
-            
+
             if len(options) > 0:
                 direction = self.rng.choice(options)
                 self.open_wall(x, y, direction)
@@ -104,59 +102,3 @@ class MazeGenerator:
                 stack.append((x, y))
             else:
                 stack.pop()
-
-
-    def display(self) -> None:
-        for y in range(self.height):
-            line = ""
-
-            for x in range(self.width):
-                line += "+"
-
-                if self.grid[y][x] & (1 << N):
-                    line += "---"
-
-                else:
-                    line += "   "
-
-            line += "+"
-            print(line)
-
-
-            line = ""
-            for x in range(self.width):
-                if self.grid[y][x] & (1 << W):
-                    line += "|"
-                else:
-                    line += " "
-
-                if (x, y) in self.cells_42:
-                    line += "███"
-                else:
-                    line += "   "
-
-            if self.grid[y][self.width - 1] & (1 << E):
-                line += "|"
-            else:
-                line += " "
-            print(line)
-
-        line = ""
-        for x in range(self.width):
-            line += "+"
-            if self.grid[self.height - 1][x] & (1 << S):
-                line += "---"
-            else:
-                line += "   "
-        line += "+"
-        print(line)
-
-
-def main() -> None:
-    maze = MazeGenerator(20, 15, (0, 0), (19, 14), seed=42)
-    maze.generate()
-    maze.display()
-
-
-if __name__ == "__main__":
-    main()
