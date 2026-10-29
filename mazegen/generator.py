@@ -1,5 +1,7 @@
 import random
 N, E, S, W = 0, 1, 2, 3
+DX = [0, 1, 0, -1]
+DY = [-1, 0, 1, 0]
 CELLS_42 = [
     # numero 4
     (0, 1), (2, 1),
@@ -30,12 +32,10 @@ class MazeGenerator:
         self.cells_42: list[tuple[int, int]] = []
 
     def open_wall(self, x: int, y: int, direction: int) -> None:
-        dx = [0, 1, 0, -1]
-        dy = [-1, 0, 1, 0]
         opposite = [S, W, N, E]
 
-        nx = x + dx[direction]
-        ny = y + dy[direction]
+        nx = x + DX[direction]
+        ny = y + DY[direction]
 
         self.grid[y][x] &= ~(1 << direction)
         self.grid[ny][nx] &= ~(1 << opposite[direction])
@@ -102,3 +102,30 @@ class MazeGenerator:
                 stack.append((x, y))
             else:
                 stack.pop()
+
+
+    def solve(self) -> dict:
+        visited = [[False] * self.width for _ in range(self.height)]
+        queue = [self.entry]
+        came_from = {}
+
+        visited[self.entry[1]][self.entry[0]] = True
+
+        while queue:
+            current = queue.pop(0)
+            x = current[0]
+            y = current[1]
+            if current == self.exit_:
+                break
+
+            for direction in N, E, S, W:
+                if not self.grid[y][x] & (1 << direction):
+                    nx = x + DX[direction]
+                    ny = y + DY[direction]
+
+                if not visited[ny][nx] and visited[ny][nx] in self.grid[x][y] and self.open_wall(nx, ny, direction) == True:
+                    visited[ny][nx] = True
+                    came_from[(nx, ny)] = ((x, y), direction)
+                    queue.append((nx, ny))
+
+        return came_from

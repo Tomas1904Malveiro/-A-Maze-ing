@@ -6,21 +6,21 @@ def display(maze: MazeGenerator) -> None:
         line = ""
 
         for x in range(maze.width):
-            line += "+"
+            line += "𖦹"
 
             if maze.grid[y][x] & (1 << N):
-                line += "---"
+                line += "═══"
 
             else:
                 line += "   "
 
-        line += "+"
+        line += "𖦹"
         print(line)
 
         line = ""
         for x in range(maze.width):
             if maze.grid[y][x] & (1 << W):
-                line += "|"
+                line += "║"
             else:
                 line += " "
 
@@ -30,17 +30,17 @@ def display(maze: MazeGenerator) -> None:
                 line += "   "
 
         if maze.grid[y][maze.width - 1] & (1 << E):
-            line += "|"
+            line += "║"
         else:
             line += " "
         print(line)
 
     line = ""
     for x in range(maze.width):
-        line += "+"
+        line += "𖦹"
         if maze.grid[maze.height - 1][x] & (1 << S):
-            line += "---"
+            line += "═══"
         else:
             line += "   "
-    line += "+"
+    line += "𖦹"
     print(line)
