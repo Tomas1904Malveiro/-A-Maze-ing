@@ -104,7 +104,7 @@ class MazeGenerator:
                 stack.pop()
 
 
-    def solve(self) -> dict:
+    def solve(self) -> str:
         visited = [[False] * self.width for _ in range(self.height)]
         queue = [self.entry]
         came_from = {}
@@ -119,13 +119,28 @@ class MazeGenerator:
                 break
 
             for direction in N, E, S, W:
-                if not self.grid[y][x] & (1 << direction):
-                    nx = x + DX[direction]
-                    ny = y + DY[direction]
+                nx = x + DX[direction]
+                ny = y + DY[direction]
 
-                if not visited[ny][nx] and visited[ny][nx] in self.grid[x][y] and self.open_wall(nx, ny, direction) == True:
+                if 0 <= nx < self.width and 0 <= ny < self.height and not self.grid[y][x] & (1 << direction) and not visited[ny][nx]:
                     visited[ny][nx] = True
                     came_from[(nx, ny)] = ((x, y), direction)
                     queue.append((nx, ny))
 
-        return came_from
+        if self.exit_ not in came_from:
+            return ""
+
+        position = self.exit_
+        path = []
+        while position != self.entry:
+            previous = came_from[position][0]
+            direction = came_from[position][1]
+            path.append(direction)
+            position = previous
+
+        path.reverse()
+        result = ""
+        for d in path:
+            result += "NESW"[d]
+
+        return result
